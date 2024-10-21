@@ -40,7 +40,7 @@ func main() {
 	}
 }
 
-func getNodeType(fileInfo os.FileInfo) Node {
+func getNodeType(fileInfo os.FileInfo, isLast bool) Node {
 	if fileInfo.Name() == "." {
 		return Root
 	} else if fileInfo.Name() == ".." {
@@ -49,7 +49,7 @@ func getNodeType(fileInfo os.FileInfo) Node {
 		return Branch
 	} else if fileInfo.Mode()&os.ModeSymlink != 0 {
 		return Symlink
-	} else if fileInfo.Mode()&os.ModeDir == 0 {
+	} else if fileInfo.Mode()&os.ModeDir == 0 && !isLast {
 		return Leaf
 	} else {
 		return FinalLeaf
@@ -65,7 +65,7 @@ func printTree(root string, prefix string, isLast bool) error {
 	}
 
 	// Get the node type
-	node := getNodeType(fileInfo)
+	node := getNodeType(fileInfo, isLast)
 
 	// Print the current node with appropriate prefix
 	switch node {
